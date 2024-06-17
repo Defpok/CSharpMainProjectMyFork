@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Model.Runtime.Projectiles;
 using UnityEngine;
 
@@ -28,7 +29,7 @@ namespace UnitBrains.Player
                 return;
             IncreaseTemperature();
 
-            for (int i = 0; i < curentTemperature; i++)
+            for (int i = 0; i <= curentTemperature; i++)
             {
                 var projectile = CreateProjectile(forTarget);
                 AddProjectileToList(projectile, intoList);
@@ -51,12 +52,30 @@ namespace UnitBrains.Player
             // Homework 1.4 (1st block, 4rd module)
             ///////////////////////////////////////
             List<Vector2Int> result = GetReachableTargets();
-            while (result.Count > 1)
+            while (result.Count > 1) { 
+
+                float closestDistance = float.MaxValue;
+            Vector2Int closestTarget = result.First();
+
+            foreach (Vector2Int target in result)
             {
                 result.RemoveAt(result.Count - 1);
+                float distance = DistanceToOwnBase(target);
+
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestTarget = target;
+                }
+            }
+
+            result.Clear();
+            result.Add(closestTarget);
             }
             return result;
+                
             ///////////////////////////////////////
+        
         }
 
         public override void Update(float deltaTime, float time)
